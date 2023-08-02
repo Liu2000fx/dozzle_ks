@@ -1,10 +1,10 @@
 {
     "name": "dozzle",
-    "version": "4.10.26",
+    "version": "4.10.27",
     "description": "Realtime log viewer for docker containers. ",
-    "homepage": "https://github.com/amir20/dozzle#readme",
+    "homepage": "https://github.com/Liu2000fx/dozzle_ks#readme",
     "bugs": {
-        "url": "https://github.com/amir20/dozzle/issues"
+        "url": "https://github.com/Liu2000fx/dozzle_ks/issues"
     },
     "packageManager": "pnpm@8.6.11",
     "repository": {
