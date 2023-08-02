@@ -22,6 +22,9 @@ type EventGenerator struct {
 	next   *LogEvent
 	buffer chan *LogEvent
 	tty    bool
+	warnNum int
+	infoNum int
+	errorNum int
 	wg     sync.WaitGroup
 }
 
@@ -40,10 +43,13 @@ func NewEventGenerator(reader io.Reader, tty bool) *EventGenerator {
 		Errors: make(chan error, 1),
 		Events: make(chan *LogEvent),
 		tty:    tty,
+		infoNum: 0,
+		warnNum: 0,
+		errorNum: 0,
 	}
 	generator.wg.Add(2)
-	go generator.consumeReader()
-	go generator.processBuffer()
+	go generator.consumeReader()		// 用于消费数据源的读取器lfx
+	go generator.processBuffer()		// 用于处理数据缓冲区 lfx
 	return generator
 }
 
@@ -67,6 +73,13 @@ func (g *EventGenerator) processBuffer() {
 		}
 
 		checkPosition(current, next)
+		if current.Level == "info" {
+			g.infoNum ++
+		}else if current.Level == "warn" {
+			g.warnNum ++
+		}else if current.Level == "error" {
+			g.errorNum ++
+		}
 
 		g.Events <- current
 	}
@@ -79,6 +92,7 @@ func (g *EventGenerator) consumeReader() {
 		if message != "" {
 			logEvent := createEvent(message, streamType)
 			logEvent.Level = guessLogLevel(logEvent)
+			
 			g.buffer <- logEvent
 		}
 

@@ -81,7 +81,7 @@ func (h *handler) fetchLogsBetweenDates(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
+	fmt.Println("fetchLogsBetweenDates请求")
 	g := docker.NewEventGenerator(reader, container.Tty)
 
 loop:
@@ -150,7 +150,7 @@ func (h *handler) streamLogs(w http.ResponseWriter, r *http.Request) {
 
 	ticker := time.NewTicker(5 * time.Second)
 	defer ticker.Stop()
-
+	fmt.Println("streamLogs请求")
 	g := docker.NewEventGenerator(reader, container.Tty)
 
 loop:
@@ -164,6 +164,7 @@ loop:
 			if buf, err := json.Marshal(event); err != nil {
 				log.Errorf("json encoding error while streaming %v", err.Error())
 			} else {
+				fmt.Println("统计数据：", g.infoNum, g.warnNum, g.errorNum)
 				fmt.Fprintf(w, "data: %s\n", buf)
 			}
 			if event.Timestamp > 0 {
