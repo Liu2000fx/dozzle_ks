@@ -67,7 +67,7 @@ func (g *EventGeneratorCalc) consumeReader() {
 				g.ErrorNum ++
 			}
 		}
-		if readerError != io.EOF {
+		if readerError == io.EOF {
 			fmt.Println("读到io末尾了")
 			if readerError != BadHeaderErrCalc {
 				g.Errors <- readerError
