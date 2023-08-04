@@ -25,7 +25,7 @@ type EventGeneratorCalc struct {
 	InfoNum int64
 	ErrorNum int64
 	Num int
-	wg     sync.WaitGroup
+	Wg     sync.WaitGroup
 }
 
 var bufPoolCalc = sync.Pool{
@@ -47,7 +47,7 @@ func NewEventGeneratorCalc(reader io.Reader, tty bool) *EventGeneratorCalc {
 		ErrorNum: 0,
 		Num:0,
 	}
-	generator.wg.Add(1)
+	generator.Wg.Add(1)
 	go generator.consumeReader()		// 用于消费数据源的读取器lfx
 	return generator
 }
@@ -81,7 +81,7 @@ func (g *EventGeneratorCalc) consumeReader() {
 			}
 		}
 	}
-	g.wg.Done()
+	g.Wg.Done()
 }
 
 
