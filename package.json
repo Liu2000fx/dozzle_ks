@@ -1,6 +1,6 @@
 {
     "name": "dozzle",
-    "version": "4.10.29",
+    "version": "4.10.32",
     "description": "Realtime log viewer for docker containers. ",
     "homepage": "https://github.com/Liu2000fx/dozzle_ks#readme",
     "bugs": {
