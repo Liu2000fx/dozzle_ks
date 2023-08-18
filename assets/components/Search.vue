@@ -1,5 +1,5 @@
 <template>
-  <div class="search columns is-gapless is-vcentered" v-show="showSearch" v-if="search">
+  <div class="search columns is-gapless is-vcentered" v-show="showSearchPage" v-if="search">
     <div class="column">
       <p class="control has-icons-left">
         <input
@@ -8,7 +8,7 @@
           placeholder="Find / RegEx"
           ref="input"
           v-model="searchFilter"
-          @keyup.esc="resetSearch()"
+          @keyup.esc="resetSearchPage()"
         />
         <span class="icon is-left">
           <mdi:light-magnify />
@@ -16,24 +16,41 @@
       </p>
     </div>
     <div class="column is-1 has-text-centered">
-      <button class="delete is-medium" @click="resetSearch()"></button>
+      <button class="delete is-medium" @click="resetSearchPage()"></button>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 const input = ref<HTMLInputElement>();
-const { searchFilter, showSearch, resetSearch } = useSearchFilter();
-
+const { searchFilter, showSearch } = useSearchFilter();
+let showSearchPage = ref(false);
 onKeyStroke("f", (e) => {
   if (e.ctrlKey || e.metaKey) {
+    if (showSearchPage.value) {
+      resetSearchPage();
+      e.preventDefault();
+      return;
+    }
     showSearch.value = true;
+    showSearchPage.value = true;
     nextTick(() => input.value?.focus() || input.value?.select());
     e.preventDefault();
   }
 });
-
-onUnmounted(() => resetSearch());
+const searchContext = defineProps(["searchContext"]);
+watch(searchContext, (newValue) => {
+  searchFilter.value = newValue.searchContext;
+  showSearch.value = true;
+});
+function resetSearchPage() {
+  searchFilter.value = "";
+  showSearch.value = false;
+  showSearchPage.value = false;
+}
+// const searchContext0 = inject("searchContext") as Ref<string>;
+// console.log("搜索啥", searchContext.value);
+onUnmounted(() => resetSearchPage());
 </script>
 
 <style lang="scss" scoped>

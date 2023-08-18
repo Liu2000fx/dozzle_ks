@@ -251,7 +251,7 @@ func (d *Client) ContainerLogs(ctx context.Context, id string, since string, std
 		Timestamps: true,
 		Since:      since,
 	}
-
+	
 	reader, err := d.cli.ContainerLogs(ctx, id, options)
 	if err != nil {
 		return nil, err
@@ -298,7 +298,7 @@ func (d *Client) ContainerLogsBetweenDates(ctx context.Context, id string, from 
 	}
 
 	log.Debugf("fetching logs from Docker with option: %+v", options)
-
+	fmt.Println("【到底几点】老日志", from.Format(time.RFC3339), to.Format(time.RFC3339))
 	reader, err := d.cli.ContainerLogs(ctx, id, options)
 	if err != nil {
 		return nil, err

@@ -1,5 +1,10 @@
 <template>
-  <log-event-source ref="source" #default="{ messages }" @loading-more="loadingMore($event)">
+  <log-event-source
+    ref="source"
+    #default="{ messages }"
+    @sendData="receiveDataFromChild"
+    @loading-more="loadingMore($event)"
+  >
     <log-viewer :messages="messages"></log-viewer>
   </log-event-source>
 </template>
@@ -8,6 +13,7 @@
 import LogEventSource from "./LogEventSource.vue";
 
 const loadingMore = defineEmit<[value: boolean]>();
+const sendData = defineEmit<[value: number[]]>();
 const source = $ref<InstanceType<typeof LogEventSource>>();
 function clear() {
   source?.clear();
@@ -15,4 +21,8 @@ function clear() {
 defineExpose({
   clear,
 });
+
+function receiveDataFromChild(data: number[]) {
+  sendData(data);
+}
 </script>

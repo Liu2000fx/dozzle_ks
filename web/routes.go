@@ -15,8 +15,8 @@ import (
 	"path"
 	"strings"
 
-	"github.com/amir20/dozzle/analytics"
-	"github.com/amir20/dozzle/docker"
+	"github.com/Liu2000fx/dozzle_ks/analytics"
+	"github.com/Liu2000fx/dozzle_ks/docker"
 	"github.com/docker/docker/api/types"
 	"github.com/go-chi/chi/v5"
 

@@ -50,6 +50,9 @@ type LogEvent struct {
 	Level     string      `json:"l,omitempty"`
 	Position  LogPosition `json:"p,omitempty"`
 	Stream    string      `json:"s,omitempty"`
+	InfoNum    int64      `json:"in,omitempty"`
+	WarnNum    int64      `json:"wn,omitempty"`
+	ErrorNum   int64      `json:"en,omitempty"`
 }
 
 func (l *LogEvent) HasLevel() bool {

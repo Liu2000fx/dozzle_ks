@@ -42,3 +42,26 @@ func guessLogLevel(logEvent *LogEvent) string {
 
 	return ""
 }
+
+func guessLogLevelCalc(value string) string {
+	levels := []string{"error", "warn", "warning", "info", "debug", "trace", "fatal" }
+	stripped := ANSI_COLOR_REGEX.ReplaceAllString(value, "")  
+	for _, level := range levels {
+
+		if match, _ := regexp.MatchString("(?i)^"+level+"[^a-z]", stripped); match {
+			return level
+		}
+
+		if strings.Contains(value, "["+strings.ToUpper(level)+"]") {
+			return level
+		}
+
+		if strings.Contains(value, " "+strings.ToUpper(level)+" ") {
+			return level
+		}
+	}
+	if matches := KEY_VALUE_REGEX.FindStringSubmatch(value); matches != nil {
+		return matches[1]
+	}
+	return ""
+}

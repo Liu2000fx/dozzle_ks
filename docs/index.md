@@ -13,7 +13,7 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: View on GitHub
-      link: https://github.com/amir20/dozzle
+      link: https://github.com/Liu2000fx/dozzle_ks
 
 features:
   - title: Real-time logging

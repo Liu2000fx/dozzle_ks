@@ -1,6 +1,12 @@
 <template>
-  <search></search>
-  <log-container :id="id" show-title :scrollable="activeContainers.length > 0" v-if="currentContainer"></log-container>
+  <search :searchContext="searchContext"></search>
+  <log-container
+    :id="id"
+    @sendDataOK="receiveDataFromChild"
+    show-title
+    :scrollable="activeContainers.length > 0"
+    v-if="currentContainer"
+  ></log-container>
   <div v-else-if="ready" class="notification is-warning is-light m-6">
     <h1 class="title">
       {{ $t("error.container-not-found") }}
@@ -17,7 +23,12 @@ const currentContainer = store.currentContainer($$(id));
 const { activeContainers, ready } = storeToRefs(store);
 
 setTitle("loading");
+let searchContext = ref("");
 
+function receiveDataFromChild(data: string) {
+  searchContext.value = data;
+}
+provide("searchContext", searchContext.value);
 onMounted(() => {
   setTitle(currentContainer.value?.name);
 });

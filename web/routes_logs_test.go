@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/amir20/dozzle/docker"
+	"github.com/Liu2000fx/dozzle_ks/docker"
 	"github.com/beme/abide"
 	"github.com/stretchr/testify/mock"
 	"github.com/stretchr/testify/require"

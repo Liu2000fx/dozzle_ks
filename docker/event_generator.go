@@ -22,9 +22,12 @@ type EventGenerator struct {
 	next   *LogEvent
 	buffer chan *LogEvent
 	tty    bool
-	warnNum int
-	infoNum int
-	errorNum int
+	WarnNum int64
+	InfoNum int64
+	ErrorNum int64
+	Num int64
+	TotalNum int64
+	timeComp int64
 	wg     sync.WaitGroup
 }
 
@@ -36,16 +39,19 @@ var bufPool = sync.Pool{
 
 var BadHeaderErr = fmt.Errorf("dozzle/docker: unable to read header")
 
-func NewEventGenerator(reader io.Reader, tty bool) *EventGenerator {
+func NewEventGenerator(reader io.Reader, tty bool, info, warn, errorn, num, timeC int64) *EventGenerator {
 	generator := &EventGenerator{
 		reader: bufio.NewReader(reader),
 		buffer: make(chan *LogEvent, 100),
 		Errors: make(chan error, 1),
 		Events: make(chan *LogEvent),
 		tty:    tty,
-		infoNum: 0,
-		warnNum: 0,
-		errorNum: 0,
+		InfoNum: info,
+		WarnNum: warn,
+		ErrorNum: errorn,
+		Num: num,
+		TotalNum: 0,
+		timeComp: timeC,
 	}
 	generator.wg.Add(2)
 	go generator.consumeReader()		// 用于消费数据源的读取器lfx
@@ -64,6 +70,7 @@ func (g *EventGenerator) processBuffer() {
 		} else {
 			event, ok := <-g.buffer
 			if !ok {
+				log.WithField("InfoNum", g.InfoNum).WithField("WarnNum", g.WarnNum).WithField("ErrorNum", g.ErrorNum).Debug("第一波结束了")
 				close(g.Events)
 				break
 			}
@@ -73,31 +80,46 @@ func (g *EventGenerator) processBuffer() {
 		}
 
 		checkPosition(current, next)
-		if current.Level == "info" {
-			g.infoNum ++
-		}else if current.Level == "warn" {
-			g.warnNum ++
-		}else if current.Level == "error" {
-			g.errorNum ++
-		}
+
 
 		g.Events <- current
 	}
 	g.wg.Done()
 }
+func Comp(condition bool) string {
+	if condition {
+		return ">"
+	} else {
+		return "<"
+	}
+}
 
 func (g *EventGenerator) consumeReader() {
 	for {
+		
 		message, streamType, readerError := readEvent(g.reader, g.tty)
+		g.TotalNum++
 		if message != "" {
-			logEvent := createEvent(message, streamType)
+			logEvent := g.createEvent(message, streamType)
 			logEvent.Level = guessLogLevel(logEvent)
-			
+			// fmt.Println(logEvent.Timestamp,  Comp(logEvent.Timestamp > g.timeComp)   , g.timeComp)
+			g.Num++
+			if logEvent.Timestamp > g.timeComp && logEvent.Level == "info" {
+				g.InfoNum ++
+			}else if logEvent.Timestamp > g.timeComp && (logEvent.Level == "warn" || logEvent.Level == "warning") {
+				g.WarnNum ++
+			}else if logEvent.Timestamp > g.timeComp && logEvent.Level == "error" {
+				g.ErrorNum ++
+			}
 			g.buffer <- logEvent
 		}
-
 		if readerError != nil {
+			fmt.Println("【读300秒】完了")
 			if readerError != BadHeaderErr {
+				fmt.Println("【读300时】遇到了【意外错误】", readerError)
+				g.Errors <- readerError
+			}else if readerError == BadHeaderErr {
+				fmt.Println("【读300时】遇到了【意外错误--坏头错误*****】", readerError)
 				g.Errors <- readerError
 			}
 			close(g.buffer)
@@ -133,11 +155,14 @@ func readEvent(reader *bufio.Reader, tty bool) (string, StdType, error) {
 		}
 		return message, streamType, nil
 	} else {
-		n, err := reader.Read(header)
+		n, err := io.ReadFull(reader, header)
 		if err != nil {
+			fmt.Println("【读300时】遇到了【意外根源1】", err)
 			return "", streamType, err
 		}
 		if n != 8 {
+			message, _ := reader.ReadString('\n')
+			fmt.Println("-------------------------", n, header, message)
 			return "", streamType, BadHeaderErr
 		}
 
@@ -156,12 +181,35 @@ func readEvent(reader *bufio.Reader, tty bool) (string, StdType, error) {
 		}
 		_, err = io.CopyN(buffer, reader, int64(count))
 		if err != nil {
+			fmt.Println("【读300时】遇到了【意外根源2】", err)
 			return "", streamType, err
 		}
 		return buffer.String(), streamType, nil
 	}
 }
 
+func (g *EventGenerator) createEvent(message string, streamType StdType) *LogEvent {
+	h := fnv.New32a()
+	h.Write([]byte(message))
+	logEvent := &LogEvent{Id: h.Sum32(), Message: message, Stream: streamType.String(), InfoNum: g.InfoNum, WarnNum: g.WarnNum, ErrorNum: g.ErrorNum}
+	if index := strings.IndexAny(message, " "); index != -1 {
+		logId := message[:index]
+		if timestamp, err := time.Parse(time.RFC3339Nano, logId); err == nil {
+			logEvent.Timestamp = timestamp.UnixMilli()
+			message = strings.TrimSuffix(message[index+1:], "\n")
+			logEvent.Message = message
+			if json.Valid([]byte(message)) {
+				var data map[string]interface{}
+				if err := json.Unmarshal([]byte(message), &data); err != nil {
+					log.Warnf("unable to parse json logs - error was \"%v\" while trying unmarshal \"%v\"", err.Error(), message)
+				} else {
+					logEvent.Message = data
+				}
+			}
+		}
+	}
+	return logEvent
+}
 func createEvent(message string, streamType StdType) *LogEvent {
 	h := fnv.New32a()
 	h.Write([]byte(message))

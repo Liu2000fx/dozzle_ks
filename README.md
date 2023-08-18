@@ -4,10 +4,10 @@ Dozzle is a small lightweight application with a web based interface to monitor 
 
 https://user-images.githubusercontent.com/260667/227634771-9ebbe381-16a8-465a-b28a-450c5cd20c94.mp4
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/amir20/dozzle)](https://goreportcard.com/report/github.com/amir20/dozzle)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Liu2000fx/dozzle_ks)](https://goreportcard.com/report/github.com/Liu2000fx/dozzle_ks)
 [![Docker Pulls](https://img.shields.io/docker/pulls/amir20/dozzle.svg)](https://hub.docker.com/r/amir20/dozzle/)
 [![Docker Version](https://img.shields.io/docker/v/amir20/dozzle?sort=semver)](https://hub.docker.com/r/amir20/dozzle/)
-![Test](https://github.com/amir20/dozzle/workflows/Test/badge.svg)
+![Test](https://github.com/Liu2000fx/dozzle_ks/workflows/Test/badge.svg)
 
 ## Features
 
@@ -184,7 +184,7 @@ Below is an example with nginx and using `proxy_pass` to disable buffering.
 
 Dozzle does collect some analytics. Analytics is anonymous usage tracking of the features which are used the most. See the section above on how to disable any analytic collection.
 
-In the browser, Dozzle has a [strict](https://github.com/amir20/dozzle/blob/master/web/csp.go#L9) Content Security Policy which only allows the following policies:
+In the browser, Dozzle has a [strict](https://github.com/Liu2000fx/dozzle_ks/blob/master/web/csp.go#L9) Content Security Policy which only allows the following policies:
 
 - Allow connect to `api.github.com` to fetch most recent version.
 - Only allow `<script>` and `<style>` files from `self`
@@ -196,7 +196,7 @@ Dozzle opens all links with `rel="noopener"`.
 <details>
  <summary>We have tools that uses Dozzle when a new container is created. How can I get a direct link to a container by name?</summary>
 
-Dozzle has a [special route](https://github.com/amir20/dozzle/blob/master/assets/pages/Show.vue) that can be used to search containers by name and then forward to that container. For example, if you have a container with name `"foo.bar"` and id `abc123`, you can send your users to `/show?name=foo.bar` which will be forwarded to `/container/abc123`.
+Dozzle has a [special route](https://github.com/Liu2000fx/dozzle_ks/blob/master/assets/pages/Show.vue) that can be used to search containers by name and then forward to that container. For example, if you have a container with name `"foo.bar"` and id `abc123`, you can send your users to `/show?name=foo.bar` which will be forwarded to `/container/abc123`.
 
 </details>
 

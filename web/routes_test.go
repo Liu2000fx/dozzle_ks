@@ -7,7 +7,7 @@ import (
 	"io"
 	"io/fs"
 
-	"github.com/amir20/dozzle/docker"
+	"github.com/Liu2000fx/dozzle_ks/docker"
 	"github.com/go-chi/chi/v5"
 
 	"github.com/stretchr/testify/mock"

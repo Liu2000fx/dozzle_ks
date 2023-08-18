@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/amir20/dozzle/docker"
+	"github.com/Liu2000fx/dozzle_ks/docker"
 
 	log "github.com/sirupsen/logrus"
 )

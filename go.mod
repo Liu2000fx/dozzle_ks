@@ -30,15 +30,10 @@ require github.com/go-chi/chi/v5 v5.0.10
 
 require (
 	github.com/alexflint/go-scalar v1.2.0 // indirect
-	github.com/cespare/reflex v0.3.1 // indirect
-	github.com/creack/pty v1.1.18 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/google/go-cmp v0.5.5 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
-	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/kr/pretty v0.2.1 // indirect
-	github.com/ogier/pflag v0.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	golang.org/x/mod v0.10.0 // indirect

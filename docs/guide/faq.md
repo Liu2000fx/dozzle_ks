@@ -29,7 +29,7 @@ server {
 
 ## We have tools that uses Dozzle when a new container is created. How can I get a direct link to a container by name?
 
-Dozzle has a special [route](https://github.com/amir20/dozzle/blob/master/assets/pages/show.vue) that can be used to search containers by name and then forward to that container. For example, if you have a container with name `"foo.bar"` and id `abc123`, you can send your users to `/show?name=foo.bar` which will be forwarded to `/container/abc123`.
+Dozzle has a special [route](https://github.com/Liu2000fx/dozzle_ks/blob/master/assets/pages/show.vue) that can be used to search containers by name and then forward to that container. For example, if you have a container with name `"foo.bar"` and id `abc123`, you can send your users to `/show?name=foo.bar` which will be forwarded to `/container/abc123`.
 
 ## I installed Dozzle but memory consumption doesn't show up!
 
